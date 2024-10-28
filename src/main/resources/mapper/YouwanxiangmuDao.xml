@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YouwanxiangmuDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.youwanxiangmu_name as youwanxiangmuName
+        ,a.youwanxiangmu_money as youwanxiangmuMoney
+        ,a.leixing_types as leixingTypes
+        ,a.youwanxiangmu_photo as youwanxiangmuPhoto
+        ,a.youwanxiangmu_content as youwanxiangmuContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YouwanxiangmuView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM youwanxiangmu  a
+
+        <where>
+            <if test=" params.youwanxiangmuName != '' and params.youwanxiangmuName != null and params.youwanxiangmuName != 'null' ">
+                and a.youwanxiangmu_name like CONCAT('%',#{params.youwanxiangmuName},'%')
+            </if>
+            <if test="params.youwanxiangmuMoneyStart != null">
+                <![CDATA[  and a.youwanxiangmu_money >= #{params.youwanxiangmuMoneyStart}   ]]>
+            </if>
+            <if test="params.youwanxiangmuMoneyEnd != null">
+                <![CDATA[  and a.youwanxiangmu_money <= #{params.youwanxiangmuMoneyEnd}   ]]>
+            </if>
+            <if test="params.leixingTypes != null">
+                and a.leixing_types = #{params.leixingTypes}
+            </if>
+            <if test=" params.youwanxiangmuContent != '' and params.youwanxiangmuContent != null and params.youwanxiangmuContent != 'null' ">
+                and a.youwanxiangmu_content like CONCAT('%',#{params.youwanxiangmuContent},'%')
+            </if>
+
+        </where>
+        order by a.${params.orderBy} desc
+    </select>
+
+</mapper>

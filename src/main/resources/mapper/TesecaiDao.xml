@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.TesecaiDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.tesecai_name as tesecaiName
+        ,a.tesecai_money as tesecaiMoney
+        ,a.kouwei_types as kouweiTypes
+        ,a.leixing_types as leixingTypes
+        ,a.tesecai_photo as tesecaiPhoto
+        ,a.tesecai_content as tesecaiContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.TesecaiView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM tesecai  a
+
+        <where>
+            <if test=" params.tesecaiName != '' and params.tesecaiName != null and params.tesecaiName != 'null' ">
+                and a.tesecai_name like CONCAT('%',#{params.tesecaiName},'%')
+            </if>
+            <if test="params.tesecaiMoneyStart != null">
+                <![CDATA[  and a.tesecai_money >= #{params.tesecaiMoneyStart}   ]]>
+            </if>
+            <if test="params.tesecaiMoneyEnd != null">
+                <![CDATA[  and a.tesecai_money <= #{params.tesecaiMoneyEnd}   ]]>
+            </if>
+            <if test="params.kouweiTypes != null">
+                and a.kouwei_types = #{params.kouweiTypes}
+            </if>
+            <if test="params.leixingTypes != null">
+                and a.leixing_types = #{params.leixingTypes}
+            </if>
+            <if test=" params.tesecaiContent != '' and params.tesecaiContent != null and params.tesecaiContent != 'null' ">
+                and a.tesecai_content like CONCAT('%',#{params.tesecaiContent},'%')
+            </if>
+
+        </where>
+        order by a.${params.orderBy} desc
+    </select>
+
+</mapper>
